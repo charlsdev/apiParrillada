@@ -6,9 +6,9 @@ const encryptPassword = async (password) => {
    return hash;
 };
 
-const matchPassword = async (password) => {
+const matchPassword = async (passwordLog, passwordDB) => {
    try {
-      return await bcrypt.compare(password, process.env.savedPassword);
+      return await bcrypt.compare(passwordLog, passwordDB);
    } catch (e) {
       console.log(e);
    }

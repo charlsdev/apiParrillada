@@ -2,45 +2,64 @@ const { gql } = require('apollo-server');
 
 const typeDefs = gql`
    type Query {
-      boletosCount(pass: String!): String!
-      allBoletos(pass: String!): [Usuarios]!
-      oneBoleto(pass: String!, num: Int!): resUser!
-      searchVendedor(pass: String!, vend: Vendedores!): String!
+      allUsers: [Usuarios]!,
+      userLogin(data: inputLogin): Usuarios!
    }
+
    type Mutation {
-      addNewBoleto(pass: String!, data: inputUsers): resUser!
-      editBoleto(pass: String!, numB: Int!, data: inputUsers!): resUser!
-      deleteBoleto(pass: String!, numB: Int!): String!
+      newUsuario(data: inputUsers!): Usuarios!
    }
+
    type Usuarios {
       _id: ID
+      cedula: String
       apellidos: String
       nombres: String
+      fechaNacimiento: String
+      genero: String
+      direccion: String
       telefono: String
-      numBoleto: String
-      vendedor: String
+      email: String
+      privilegio: String
+      password: String
+      estado: String
+      profile: String
    }
-   type resUser {
-      msg: String!
-      User: Usuarios
-   }
+
    input inputUsers {
+      cedula: String!
       apellidos: String!
       nombres: String!
+      fechaNacimiento: String!
+      genero: Genero! = NoDefinido
+      direccion: String!
       telefono: String!
-      numBoleto: String!
-      vendedor: Vendedores!
+      email: String!
+      privilegio: Privilegio! = Cajero
+      password: String!
+      estado: Estado! = Enabled
    }
-   enum Vendedores {
-      CarlosVP
-      NicolM
-      RashelM
-      ElizaCH
-      DavidV
-      SebastianN
-      XiomaraBP
-      VictorFC
-      MaferL
+
+   input inputLogin {
+      cedula: String!
+      password: String
+   }
+
+   enum Privilegio {
+      Administrador
+      Gerente
+      Cajero
+   }
+
+   enum Estado {
+      Enabled
+      Disabled
+   }
+
+   enum Genero {
+      Masculino
+      Femenino
+      NoDefinido
    }
 `;
 

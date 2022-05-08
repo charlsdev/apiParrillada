@@ -1,18 +1,20 @@
 const { 
-   boletoCount 
+   allUsers,
+   userLogin
 } = require('./querys/query');
 
 const { 
-   addNewBoleto 
+   newUsuario 
 } = require('./mutations/mutation');
 
 const resolvers = {
    Query: {
-      boletosCount: boletoCount,
+      allUsers,
+      userLogin,
    },
    
    Mutation: {
-      addNewBoleto: addNewBoleto,
+      newUsuario,
    }
 };
 

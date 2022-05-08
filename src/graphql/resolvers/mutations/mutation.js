@@ -1,83 +1,48 @@
-const usuariosModels = require('../../models/Users');
+const UsersModel = require('../../../models/Users');
+
 const {
-   matchPassword
-} =  require('../../security/encryptions');
+   encryptPassword
+} =  require('../../../security/encrytion');
 
-let resUser;
+const newUsuario = async (root, args) => {    
+   const {
+      cedula,
+      apellidos,
+      nombres,
+      fechaNacimiento,
+      genero,
+      direccion,
+      telefono,
+      email,
+      privilegio,
+      password,
+      estado
+   } = args.data;
 
-const addNewBoleto = async (root, args) => {    
-   const { 
-      pass
-   } = args;
+   const registerUser = new UsersModel({
+      cedula,
+      apellidos,
+      nombres,
+      fechaNacimiento,
+      genero,
+      direccion,
+      telefono,
+      email,
+      privilegio,
+      password: await(encryptPassword(password)),
+      estado,
+      profile: 'profile.svg'
+   });
 
-   if (await matchPassword(pass)) {
-      const {
-         apellidos,
-         nombres,
-         telefono,
-         numBoleto,
-         vendedor
-      } = args.data;
+   const saveUser = await registerUser.save();
 
-      const searchOne = await usuariosModels
-         .findOne({
-            numBoleto
-         })
-         .exec();
-
-      if (!searchOne) {
-         if (numBoleto >= 0 && numBoleto <= 99) {
-            const registroBol = new usuariosModels({
-               apellidos,
-               nombres,
-               telefono,
-               numBoleto,
-               vendedor
-            });
-
-            const saveUser = await registroBol.save();
-
-            if (saveUser) {
-               resUser = {
-                  msg: 'Boleto registrado con éxito...',
-                  User: saveUser
-               };
-   
-               return resUser;
-            } else {
-               resUser = {
-                  msg: 'No se ha podido guardar el registro...',
-                  User: null
-               };
-   
-               return resUser;
-            }
-         } else {
-            resUser = {
-               msg: 'Número de boleto no válido...',
-               User: null
-            };
-
-            return resUser;
-         }
-      } else {
-         resUser = {
-            msg: `Boleto ya vendido por ${searchOne.vendedor}...`,
-            User: searchOne
-         };
-
-         return resUser;
-      }
+   if (saveUser) {
+      return saveUser;
    } else {
-      resUser = {
-         msg: 'No posees los permisos suficientes...',
-         User: null
-      };
-         
-      return resUser;
+      return [];
    }
 };
 
 module.exports = {
-   addNewBoleto
+   newUsuario
 };

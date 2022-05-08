@@ -1,22 +1,38 @@
-const usuariosModels = require('../../models/Users');
-const {
-   matchPassword
-} =  require('../../security/encryptions');
+const UsersModel = require('../../../models/Users');
 
-const boletoCount = async (root, args) => {    
-   const { pass } = args;
+const allUsers = async () => {    
+   const result = await UsersModel
+      .find()
+      .lean()
+      .sort()
+      .exec();
 
-   if (await matchPassword(pass)) {
-      const result = await usuariosModels
-         .find()
-         .countDocuments();
-
-      return `Boletos vendidos ==> ${result}`;
+   if (result) {
+      return result;
    } else {
-      return 'No posees permisos suficientes...';
+      return [];
+   }
+};
+
+const userLogin = async (root, args) => {
+   const {
+      cedula
+   } = args.data;
+
+   const loginUser = await UsersModel
+      .findOne({
+         cedula
+      })
+      .lean();
+
+   if (loginUser) {
+      return loginUser;
+   } else {
+      return null;
    }
 };
 
 module.exports = {
-   boletoCount
+   allUsers,
+   userLogin
 };
